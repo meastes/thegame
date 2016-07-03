@@ -63,7 +63,12 @@ export default {
                     itemList.set(item.Name, itemToAdd);
                 }
             });
-            return [...itemList.values()].sort((a, b) => b.Rarity - a.Rarity);
+            return [...itemList.values()]
+            .sort((a, b) => {
+                const rarity = b.Rarity - a.Rarity;
+                if (rarity) return rarity;
+                return a.Name.toLowerCase().localeCompare(b.Name.toLowerCase());
+            });
         },
         useItem(id) {
             this.itemsDisabled = true;

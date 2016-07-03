@@ -1,8 +1,8 @@
 import express from 'express';
 
-import ItemStore from '../node/src/item.store';
-import ItemActivator from '../node/src/item-activator';
-import PointRetriever from '../node/src/point-retriever';
+import ItemStore from '../api/item.store';
+import ItemActivator from '../api/item-activator';
+import PointRetriever from '../api/point-retriever';
 
 const app = express();
 const itemStore = new ItemStore();

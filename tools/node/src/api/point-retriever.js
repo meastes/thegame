@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Log from 'log';
 import request from 'request-promise';
-import apiConfig from '../../config/api.config';
+import apiConfig from '../../../../config/api.config';
 
 const URL_POINTS = 'http://thegame.nerderylabs.com/points';
 

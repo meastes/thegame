@@ -13,7 +13,7 @@
     <table class="table table-striped">
         <tr>
             <th></th>
-            <th>ID</th>
+            <th>Qty</th>
             <th>Name</th>
             <th>Rarity</th>
             <th>Description</th>
@@ -21,7 +21,7 @@
         </tr>
         <tr v-for="item in items">
             <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
-            <td>{{ item.Id }}</td>
+            <td>{{ item.Quantity }}</td>
             <td>{{ item.Name }}</td>
             <td>{{ item.Rarity }}</td>
             <td>{{ item.Description }}</td>
@@ -44,13 +44,26 @@ export default {
         updateItems() {
             this.itemService.getItems()
                 .then(items => {
-                    this.items = items.sort((a, b) => b.Rarity - a.Rarity);
+                    this.items = this.getFilteredItems(items);
                     setTimeout(() => this.updateItems(), 5000);
                 })
                 .catch(err => {
                     this.error = JSON.stringify(err);
                     setTimeout(() => this.updateItems(), 5000);
                 });
+        },
+        getFilteredItems(items) {
+            const itemList = new Map();
+            items.forEach(item => {
+                if (itemList.has(item.Name)) {
+                    itemList.get(item.Name).Quantity++;
+                } else {
+                    const itemToAdd = item;
+                    itemToAdd.Quantity = 1;
+                    itemList.set(item.Name, itemToAdd);
+                }
+            });
+            return [...itemList.values()].sort((a, b) => b.Rarity - a.Rarity);
         },
         useItem(id) {
             this.itemsDisabled = true;
@@ -62,12 +75,14 @@ export default {
                 .then(data => {
                     const json = JSON.parse(data);
                     this.success = json.result.Messages[0];
+                    this.error = '';
                     this.updateItems();
                     setTimeout(() => { this.itemsDisabled = false; }, 60000);
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
+                    this.success = '';
                     this.updateItems();
                     this.itemsDisabled = false;
                 });

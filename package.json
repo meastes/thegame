@@ -9,8 +9,7 @@
     "build": "node build/build.js",
     "test": "",
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs",
-    "points": "node node/src/point-retriever-init.js",
-    "express": "node express/express-init.js"
+    "server": "node tools/node/src/express/express.init.js"
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",

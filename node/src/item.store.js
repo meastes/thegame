@@ -4,7 +4,7 @@ import PouchDb from 'pouchdb';
 
 export default class ItemStore {
     constructor() {
-        this.log = new Log('debug', fs.createWriteStream('./logs/use-item.log', { flags: 'a' }));
+        this.log = new Log('debug', fs.createWriteStream('./logs/item-store.log', { flags: 'a' }));
         this.itemDb = new PouchDb('items');
         this.itemDb.allDocs().then(docs => this.log.debug(`Item count: ${docs.rows.length}`));
     }

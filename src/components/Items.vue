@@ -42,7 +42,8 @@ export default {
             return name.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
         },
         updateItems() {
-            this.itemService.getItems().then(items => { this.items = items; });
+            this.itemService.getItems()
+                .then(items => { this.items = items.sort((a, b) => b.Rarity - a.Rarity); });
         },
         useItem(id) {
             let target;

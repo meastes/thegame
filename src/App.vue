@@ -1,5 +1,8 @@
 <template>
     <div id="app">
+        <div class="header">
+            <h1>The Game</h1>
+        </div>
         <items></items>
     </div>
 </template>
@@ -13,3 +16,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.header {
+    display: flex;
+    justify-content: center;
+}
+</style>

@@ -1,17 +1,15 @@
-/* eslint no-new: "off" */
 import fs from 'fs';
 import Log from 'log';
 import request from 'request-promise';
 import apiConfig from '../../config/api.config';
-import ItemStore from './item.store';
 
 const URL_POINTS = 'http://thegame.nerderylabs.com/points';
 
-class PointRetriever {
-    constructor() {
+export default class PointRetriever {
+    constructor(itemStore) {
         this.log =
             new Log('debug', fs.createWriteStream('./logs/point-retriever.log', { flags: 'a' }));
-        this.itemStore = new ItemStore();
+        this.itemStore = itemStore;
     }
 
     requestPoints() {
@@ -25,7 +23,7 @@ class PointRetriever {
             const json = JSON.parse(res);
             if (json.Item) {
                 this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
-                this.itemStore.addItem(json.Item);
+                this.itemStore.addItem(json.Item.Fields[0]);
             }
             this.log.debug(json);
             setTimeout(() => this.requestPoints(), 1000);
@@ -36,6 +34,3 @@ class PointRetriever {
         });
     }
 }
-
-const pr = new PointRetriever();
-pr.requestPoints();

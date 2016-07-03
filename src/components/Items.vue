@@ -15,15 +15,17 @@
             <th></th>
             <th>ID</th>
             <th>Name</th>
+            <th>Rarity</th>
             <th>Description</th>
             <th></th>
         </tr>
         <tr v-for="item in items">
-            <td><img class="img_item" v-bind:src="this.getImageUrl(item.Fields[0].Name)" /></td>
-            <td>{{ item.Fields[0].Id }}</td>
-            <td>{{ item.Fields[0].Name }}</td>
-            <td>{{ item.Fields[0].Description }}</td>
-            <td><button class="btn btn-primary" @click="this.useItem(item.Fields[0].Id)">Use Item</button></td>
+            <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
+            <td>{{ item.Id }}</td>
+            <td>{{ item.Name }}</td>
+            <td>{{ item.Rarity }}</td>
+            <td>{{ item.Description }}</td>
+            <td><button class="btn btn-primary" @click="this.useItem(item.Id)">Use Item</button></td>
         </tr>
     </table>
 </template>
@@ -48,13 +50,15 @@ export default {
                 target = this.target;
             }
             this.itemService.useItem(id, target)
-                .then(json => {
+                .then(data => {
+                    const json = JSON.parse(data);
+                    this.success = json.result.Messages[0];
                     this.updateItems();
-                    this.sucess = json.result.Messages[0];
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
+                    this.updateItems();
                 });
         },
     },

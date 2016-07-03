@@ -1,10 +1,14 @@
 import express from 'express';
-import fs from 'fs';
 
+import ItemStore from '../node/src/item.store';
 import ItemActivator from '../node/src/item-activator';
+import PointRetriever from '../node/src/point-retriever';
 
 const app = express();
-const itemActivator = new ItemActivator();
+const itemStore = new ItemStore();
+const itemActivator = new ItemActivator(itemStore);
+const pr = new PointRetriever(itemStore);
+pr.requestPoints();
 
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
@@ -14,21 +18,17 @@ app.use((req, res, next) => {
 
 app.options('*', (req, res) => { res.sendStatus(200); });
 app.get('/items', (req, res) => {
-    fs.readFile('./data/items', (err, data) => {
-        if (err) {
-            console.err(err);  // eslint-disable-line no-console
-        }
-        res.send(data);
-    });
+    itemStore.getItems().then(json => res.send(json));
 });
 app.post('/item/:id', (req, res) => {
     itemActivator.useItem(req.params.id)
-        .then(result =>
+        .then(result => {
+            const json = JSON.parse(result);
             res.send(JSON.stringify({
                 success: true,
-                result,
-            }))
-        )
+                result: json,
+            }));
+        })
         .catch(error => res.status(500).send(JSON.stringify({
             success: false,
             error,

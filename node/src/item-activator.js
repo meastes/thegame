@@ -3,15 +3,14 @@ import fs from 'fs';
 import Log from 'log';
 import request from 'request-promise';
 import apiConfig from '../../config/api.config';
-import ItemStore from './item.store';
 
 const URL_ITEMS = 'http://thegame.nerderylabs.com/items/use/';
 
 export default class ItemActivator {
-    constructor() {
+    constructor(itemStore) {
         this.log =
             new Log('debug', fs.createWriteStream('./logs/item-activator.log', { flags: 'a' }));
-        this.itemStore = new ItemStore();
+        this.itemStore = itemStore;
     }
 
     useItem(itemId, target) {

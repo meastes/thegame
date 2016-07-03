@@ -1,31 +1,27 @@
-/* eslint no-new: "off" */
 import fs from 'fs';
 import Log from 'log';
-import store from 'node-persist';
-
-const PATH_STORE = '../../../../data';
+import PouchDb from 'pouchdb';
 
 export default class ItemStore {
     constructor() {
         this.log = new Log('debug', fs.createWriteStream('./logs/use-item.log', { flags: 'a' }));
-        this.store = store;
-        this.init();
+        this.itemDb = new PouchDb('items');
+        this.itemDb.allDocs().then(docs => this.log.debug(`Item count: ${docs.rows.length}`));
     }
 
-    init() {
-        this.store.initSync({ dir: PATH_STORE });
+    getItems() {
+        return this.itemDb.allDocs({ include_docs: true })
+            .then(data => data.rows.map(doc => doc.doc.item));
     }
 
-    get items() {
-        return this.store.getItem('items') || [];
-    }
     addItem(item) {
-        const curItems = this.items;
-        curItems.push(item);
-        this.store.setItem('items', curItems);
+        this.log.debug(`Adding item: ${JSON.stringify(item)}`);
+        this.itemDb.put({ _id: item.Id, item });
+        this.itemDb.allDocs().then(docs => this.log.debug(`New item count: ${docs.rows.length}`));
     }
-    removeItem(id) {
-        const newItems = this.items.filter(item => item.Fields[0].Id !== id);
-        this.store.setItem('items', newItems);
+
+    removeItem(Id) {
+        this.log.debug(`Removing item: ${Id}`);
+        this.itemDb.get(Id).then(item => this.itemDb.remove(item));
     }
 }

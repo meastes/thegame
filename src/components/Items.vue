@@ -48,7 +48,7 @@ export default {
                     setTimeout(() => this.updateItems(), 5000);
                 })
                 .catch(err => {
-                    this.error = err;
+                    this.error = JSON.stringify(err);
                     setTimeout(() => this.updateItems(), 5000);
                 });
         },

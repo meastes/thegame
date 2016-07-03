@@ -43,7 +43,14 @@ export default {
         },
         updateItems() {
             this.itemService.getItems()
-                .then(items => { this.items = items.sort((a, b) => b.Rarity - a.Rarity); });
+                .then(items => {
+                    this.items = items.sort((a, b) => b.Rarity - a.Rarity);
+                    setTimeout(() => this.updateItems(), 5000);
+                })
+                .catch(err => {
+                    this.error = err;
+                    setTimeout(() => this.updateItems(), 5000);
+                });
         },
         useItem(id) {
             let target;
@@ -74,7 +81,6 @@ export default {
     },
     attached() {
         this.updateItems();
-        setInterval(() => this.updateItems(), 5000);
     },
 };
 </script>

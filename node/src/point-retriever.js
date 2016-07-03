@@ -1,26 +1,17 @@
 /* eslint no-new: "off" */
 import fs from 'fs';
 import Log from 'log';
-import store from 'node-persist';
-import request from 'request';
+import request from 'request-promise';
 import apiConfig from '../../config/api.config';
+import ItemStore from './item.store';
 
-const PATH_STORE = '../../../../data';
 const URL_POINTS = 'http://thegame.nerderylabs.com/points';
 
 class PointRetriever {
     constructor() {
-        this.log = new Log('debug', fs.createWriteStream('point-retriever.log', { flags: 'a' }));
-        this.store = store;
-        this.init();
-    }
-
-    init() {
-        this.store.initSync({ dir: PATH_STORE });
-    }
-
-    getPoints() {
-        setInterval(() => this.requestPoints(), 1200);
+        this.log =
+            new Log('debug', fs.createWriteStream('./logs/point-retriever.log', { flags: 'a' }));
+        this.itemStore = new ItemStore();
     }
 
     requestPoints() {
@@ -29,29 +20,20 @@ class PointRetriever {
             headers: {
                 apikey: apiConfig.apikey,
             },
-        }, (err, res, body) => {
-            if (err) {
-                this.log.error(err);
-            } else {
-                const json = JSON.parse(body);
-                if (json.Item) {
-                    this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
-                    this.addItem(json.Item);
-                }
-                this.log.debug(json);
+        })
+        .then(res => {
+            const json = JSON.parse(res);
+            if (json.Item) {
+                this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
+                this.itemStore.addItem(json.Item);
             }
+            this.log.debug(json);
+            setTimeout(() => this.requestPoints(), 1000);
+        })
+        .catch(err => {
+            this.log.error(err);
             setTimeout(() => this.requestPoints(), 1000);
         });
-    }
-
-    get items() {
-        return this.store.getItem('items') || [];
-    }
-    addItem(item) {
-        const curItems = this.items;
-        curItems.push(item);
-        this.log.debug(`Updating items with: ${curItems}`);
-        this.store.setItem('items', curItems);
     }
 }
 

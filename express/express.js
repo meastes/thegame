@@ -36,12 +36,13 @@ app.post('/item/:id', (req, res) => {
 });
 app.post('/item/:id/:target', (req, res) => {
     itemActivator.useItem(req.params.id, req.params.target)
-        .then(result =>
+        .then(result => {
+            const json = JSON.parse(result);
             res.send(JSON.stringify({
                 success: true,
-                result,
-            }))
-        )
+                result: json,
+            }));
+        })
         .catch(error => res.status(500).send(JSON.stringify({
             success: false,
             error,

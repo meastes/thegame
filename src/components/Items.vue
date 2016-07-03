@@ -25,7 +25,7 @@
             <td>{{ item.Name }}</td>
             <td>{{ item.Rarity }}</td>
             <td>{{ item.Description }}</td>
-            <td><button class="btn btn-primary" @click="this.useItem(item.Id)">Use Item</button></td>
+            <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled">Use Item</button></td>
         </tr>
     </table>
 </template>
@@ -53,6 +53,7 @@ export default {
                 });
         },
         useItem(id) {
+            this.itemsDisabled = true;
             let target;
             if (this.target !== '') {
                 target = this.target;
@@ -62,11 +63,13 @@ export default {
                     const json = JSON.parse(data);
                     this.success = json.result.Messages[0];
                     this.updateItems();
+                    setTimeout(() => { this.itemsDisabled = false; }, 60000);
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
                     this.updateItems();
+                    this.itemsDisabled = false;
                 });
         },
     },
@@ -76,6 +79,7 @@ export default {
             target: '',
             success: '',
             error: '',
+            itemsDisabled: false,
             itemService: new ItemService(),
         };
     },

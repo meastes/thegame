@@ -71,6 +71,7 @@ export default {
             });
         },
         useItem(id) {
+            window.scrollTo(0, 0);
             this.itemsDisabled = true;
             let target;
             if (this.target !== '') {
@@ -81,14 +82,12 @@ export default {
                     const json = JSON.parse(data);
                     this.success = json.result.Messages[0];
                     this.error = '';
-                    this.updateItems();
                     setTimeout(() => { this.itemsDisabled = false; }, 60000);
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
                     this.success = '';
-                    this.updateItems();
                     this.itemsDisabled = false;
                 });
         },

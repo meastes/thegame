@@ -10,24 +10,26 @@
             <input class="form-control" v-model="target" placeholder="meastes" />
         </div>
     </form>
-    <table class="table table-striped">
-        <tr>
-            <th></th>
-            <th>Qty</th>
-            <th>Name</th>
-            <th>Rarity</th>
-            <th class="hidden-sm hidden-xs">Description</th>
-            <th></th>
-        </tr>
-        <tr v-for="item in items">
-            <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
-            <td>{{ item.Quantity }}</td>
-            <td>{{ item.Name }}</td>
-            <td>{{ item.Rarity }}</td>
-            <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
-            <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled">Use Item</button></td>
-        </tr>
-    </table>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <tr>
+                <th></th>
+                <th>Qty</th>
+                <th>Name</th>
+                <th>Rarity</th>
+                <th class="hidden-sm hidden-xs">Description</th>
+                <th></th>
+            </tr>
+            <tr v-for="item in items">
+                <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
+                <td>{{ item.Quantity }}</td>
+                <td>{{ item.Name }}</td>
+                <td>{{ item.Rarity }}</td>
+                <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
+                <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-grab-o"></span></button></td>
+            </tr>
+        </table>
+    </div>
 </template>
 
 <script>
@@ -119,5 +121,8 @@ export default {
     margin: 20px;
     display: flex;
     justify-content: center;
+}
+td {
+    font-size: 13px;
 }
 </style>

@@ -22,8 +22,8 @@
                 <td>{{ item.Quantity }}</td>
                 <td>
                     <div class="tooltip-container">
-                        <tooltip trigger="click" placement="bottom" v-bind:content="item.Description">
-                            <span>{{ item.Name }}</span>
+                        <tooltip trigger="hover" placement="bottom" v-bind:content="item.Description">
+                            <div>{{ item.Name }}</div>
                         </tooltip>
                     </div>
                 </td>

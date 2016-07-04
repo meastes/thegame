@@ -39,7 +39,7 @@ export default {
             return `//cloud.nerderylabs.com/rogueone/media/images/${this.getKabobName(name)}.png`;
         },
         getKabobName(name) {
-            return name.toLowerCase().replace(/'/g, '').replace(/ /g, '-');
+            return name.toLowerCase().replace(/[':]/g, '').replace(/ /g, '-');
         },
         updateItems() {
             this.itemService.getItems()

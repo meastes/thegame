@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-const BASE_URL = 'http://localhost:8081';
+const BASE_URL = `http://${window.location.hostname}:8081`;
 
 export default class ItemService {
     constructor() {

@@ -50,30 +50,54 @@ export default {
         updateItems() {
             this.itemService.getItems()
                 .then(items => {
-                    this.items = this.getFilteredItems(items);
+                    this.updateItemsWithChangedItems(items);
                     setTimeout(() => this.updateItems(), 5000);
                 })
                 .catch(err => {
+                    console.error(err); // eslint-disable-line no-console
                     this.error = JSON.stringify(err);
                     setTimeout(() => this.updateItems(), 5000);
                 });
         },
-        getFilteredItems(items) {
-            const itemList = new Map();
+        updateItemsWithChangedItems(items) {
+            const oldItemMap = new Map();
+            this.items.forEach(item => oldItemMap.set(item.Name, item));
+            const newItemMap = this.getSquashedItemMap(items);
+            const updatedItems = this.getUpdatedItems(oldItemMap, [...newItemMap.values()]);
+            if (updatedItems.length) {
+                // Update quantities in old items, and add missing items
+                updatedItems.forEach(item => {
+                    if (oldItemMap.has(item.Name)) {
+                        oldItemMap.get(item.Name).Quantity = item.Quantity;
+                    } else {
+                        oldItemMap.set(item.Name, item);
+                    }
+                });
+                // Sort the items by rarity and name
+                this.items = [...oldItemMap.values()].sort((a, b) => {
+                    const rarity = b.Rarity - a.Rarity;
+                    if (rarity) return rarity;
+                    return a.Name.toLowerCase().localeCompare(b.Name.toLowerCase());
+                });
+            }
+        },
+        getSquashedItemMap(items) {
+            const itemMap = new Map();
             items.forEach(item => {
-                if (itemList.has(item.Name)) {
-                    itemList.get(item.Name).Quantity++;
+                if (itemMap.has(item.Name)) {
+                    itemMap.get(item.Name).Quantity++;
                 } else {
                     const itemToAdd = item;
                     itemToAdd.Quantity = 1;
-                    itemList.set(item.Name, itemToAdd);
+                    itemMap.set(item.Name, itemToAdd);
                 }
             });
-            return [...itemList.values()]
-            .sort((a, b) => {
-                const rarity = b.Rarity - a.Rarity;
-                if (rarity) return rarity;
-                return a.Name.toLowerCase().localeCompare(b.Name.toLowerCase());
+            return itemMap;
+        },
+        getUpdatedItems(oldItemMap, newItems) {
+            return newItems.filter(item => {
+                const oldItem = oldItemMap.get(item.Name);
+                return oldItem === undefined || oldItem.Quantity !== item.Quantity;
             });
         },
         useItem(id) {

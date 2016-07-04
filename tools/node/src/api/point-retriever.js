@@ -18,6 +18,7 @@ export default class PointRetriever {
             headers: {
                 apikey: apiConfig.apikey,
             },
+            timeout: 60000,
         })
         .then(res => {
             const json = JSON.parse(res);

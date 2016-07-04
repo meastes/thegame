@@ -1,9 +1,6 @@
 <template>
-    <!-- <pre>
-        {{ items | json }}
-    </pre> -->
-    <div class="alert alert-success" v-if="success">{{ success }}</div>
-    <div class="alert alert-danger" v-if="error">{{ error }}</div>
+    <alert type="success" v-if="success">{{ success }}</alert>
+    <alert type="danger" v-if="error">{{ error }}</alert>
     <form class="form_target">
         <div class="form-group">
             <label>Target:</label>
@@ -21,7 +18,13 @@
                 <th></th>
             </tr>
             <tr v-for="item in items">
-                <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
+                <td>
+                    <div class="tooltip-container">
+                        <tooltip trigger="hover" placement="bottom" v-bind:content="item.Description">
+                            <img class="img_item" v-bind:src="this.getImageUrl(item.Name)" />
+                        </tooltip>
+                    </div>
+                </td>
                 <td>{{ item.Quantity }}</td>
                 <td>{{ item.Name }}</td>
                 <td>{{ item.Rarity }}</td>
@@ -33,6 +36,7 @@
 </template>
 
 <script>
+import { alert, tooltip } from 'vue-strap';
 import ItemService from '../services/item.service';
 
 export default {
@@ -107,6 +111,10 @@ export default {
     attached() {
         this.updateItems();
     },
+    components: {
+        alert,
+        tooltip,
+    },
 };
 </script>
 
@@ -121,6 +129,9 @@ export default {
     margin: 20px;
     display: flex;
     justify-content: center;
+}
+.tooltip-container {
+    position: relative;
 }
 td {
     font-size: 13px;

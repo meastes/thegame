@@ -18,15 +18,15 @@
                 <th></th>
             </tr>
             <tr v-for="item in items">
-                <td><img class="img_item" v-bind:src="this.getImageUrl(item.Name)" /></td>
-                <td>{{ item.Quantity }}</td>
                 <td>
                     <div class="tooltip-container">
-                        <tooltip trigger="hover" placement="bottom" v-bind:content="item.Description">
-                            <div>{{ item.Name }}</div>
+                        <tooltip trigger="hover" placement="right" v-bind:content="item.Description">
+                            <img class="img_item" v-bind:src="this.getImageUrl(item.Name)" />
                         </tooltip>
                     </div>
                 </td>
+                <td>{{ item.Quantity }}</td>
+                <td>{{ item.Name }}</td>
                 <td>{{ item.Rarity }}</td>
                 <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
                 <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-grab-o"></span></button></td>

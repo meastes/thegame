@@ -16,7 +16,7 @@
             <th>Qty</th>
             <th>Name</th>
             <th>Rarity</th>
-            <th>Description</th>
+            <th class="hidden-sm hidden-xs">Description</th>
             <th></th>
         </tr>
         <tr v-for="item in items">
@@ -24,7 +24,7 @@
             <td>{{ item.Quantity }}</td>
             <td>{{ item.Name }}</td>
             <td>{{ item.Rarity }}</td>
-            <td>{{ item.Description }}</td>
+            <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
             <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled">Use Item</button></td>
         </tr>
     </table>

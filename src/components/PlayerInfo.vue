@@ -1,10 +1,10 @@
 <template>
-    <div>
-        <div>{{ name }}</div>
-        <div>{{ points }}</div>
-        <ul>
-            <li v-for="effect in effects">{{ effect }}</li>
-        </ul>
+    <div class="container">
+        <div class="player-points">
+            <div><h1>{{ points }}</h1></div>
+            <div><h4>{{ name }}</h4></div>
+        </div>
+        <span class="effect text-warning" v-for="effect in effects">{{ effect }}</span>
     </div>
 </template>
 
@@ -18,6 +18,7 @@ export default {
                 this.name = info.Name;
                 this.points = info.Points;
                 this.effects = info.ActiveEffects;
+                setTimeout(() => this.getPlayerInfo(), 1000);
             });
         },
     },
@@ -36,4 +37,15 @@ export default {
 </script>
 
 <style scoped>
+h4 {
+    letter-spacing: 11px;
+}
+.player-points {
+    display: inline-block;
+}
+.effect {
+    margin: 0px 5px 0px 5px;
+    padding: 8px;
+    border: 1px solid #aaa;
+}
 </style>

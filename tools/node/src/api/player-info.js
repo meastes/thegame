@@ -22,8 +22,8 @@ export default class PlayerInfo {
             const json = JSON.parse(res);
             this.log.debug(json);
             return {
-                Name: json.Fields[0].Name,
-                ActiveEffects: json.Fields[0].ActiveEffects,
+                Name: json.Fields[0].PlayerName,
+                ActiveEffects: json.Fields[0].Effects,
                 Points: json.Fields[0].Points,
             };
         })

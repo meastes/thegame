@@ -142,7 +142,6 @@ export default {
                 });
         },
         updateItemCooldownProgress() {
-            console.log(this.itemCDProgress);
             if (this.itemCDProgress > 59) {
                 this.itemCDProgress = 0;
                 this.itemsDisabled = false;

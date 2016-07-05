@@ -15,6 +15,12 @@
                 </form>
             </div>
         </div>
+        <div class="progress-cooldown" v-if="itemCDProgress > 0">
+            <p>Item Cooldown</p>
+            <div class="progress">
+                <progressbar :now="(itemCDProgress / 60) * 100" type="info"></progressbar>
+            </div>
+        </div>
     </div>
     <table class="table table-striped">
         <tr>
@@ -43,7 +49,7 @@
 </template>
 
 <script>
-import { alert, tooltip } from 'vue-strap';
+import { alert, tooltip, progressbar } from 'vue-strap';
 import ItemService from '../services/item.service';
 import PlayerInfo from './PlayerInfo';
 
@@ -125,7 +131,7 @@ export default {
                     this.success = json.result.Messages[0];
                     this.error = '';
                     setTimeout(() => { this.success = ''; }, 5000);
-                    setTimeout(() => { this.itemsDisabled = false; }, 60000);
+                    this.updateItemCooldownProgress();
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
@@ -135,11 +141,22 @@ export default {
                     this.itemsDisabled = false;
                 });
         },
+        updateItemCooldownProgress() {
+            console.log(this.itemCDProgress);
+            if (this.itemCDProgress > 59) {
+                this.itemCDProgress = 0;
+                this.itemsDisabled = false;
+            } else {
+                this.itemCDProgress++;
+                setTimeout(() => this.updateItemCooldownProgress(), 1000);
+            }
+        },
     },
     data() {
         return {
             items: [],
             target: '',
+            itemCDProgress: 0,
             success: '',
             error: '',
             itemsDisabled: false,
@@ -152,6 +169,7 @@ export default {
     components: {
         alert,
         tooltip,
+        progressbar,
         PlayerInfo,
     },
 };
@@ -172,6 +190,9 @@ export default {
 }
 .tooltip-container {
     position: relative;
+}
+.progress-cooldown {
+    margin: 15px 0px 15px 0px;
 }
 td {
     font-size: 13px;

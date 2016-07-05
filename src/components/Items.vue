@@ -29,7 +29,7 @@
                 <td>{{ item.Name }}</td>
                 <td>{{ item.Rarity }}</td>
                 <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
-                <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-grab-o"></span></button></td>
+                <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-pointer-o"></span></button></td>
             </tr>
         </table>
     </div>

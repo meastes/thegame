@@ -16,32 +16,30 @@
             </div>
         </div>
     </div>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <tr>
-                <th></th>
-                <th>Qty</th>
-                <th>Name</th>
-                <th>Rarity</th>
-                <th class="hidden-sm hidden-xs">Description</th>
-                <th></th>
-            </tr>
-            <tr v-for="item in items">
-                <td>
-                    <div class="tooltip-container">
-                        <tooltip trigger="hover" placement="right" v-bind:content="item.Description">
-                            <img class="img_item" v-bind:src="this.getImageUrl(item.Name)" />
-                        </tooltip>
-                    </div>
-                </td>
-                <td>{{ item.Quantity }}</td>
-                <td>{{ item.Name }}</td>
-                <td>{{ item.Rarity }}</td>
-                <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
-                <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-pointer-o"></span></button></td>
-            </tr>
-        </table>
-    </div>
+    <table class="table table-striped">
+        <tr>
+            <th></th>
+            <th>Qty</th>
+            <th>Name</th>
+            <th>Rarity</th>
+            <th class="hidden-sm hidden-xs">Description</th>
+            <th></th>
+        </tr>
+        <tr v-for="item in items">
+            <td>
+                <div class="tooltip-container">
+                    <tooltip trigger="hover" placement="right" v-bind:content="item.Description">
+                        <img class="img_item" v-bind:src="this.getImageUrl(item.Name)" />
+                    </tooltip>
+                </div>
+            </td>
+            <td>{{ item.Quantity }}</td>
+            <td>{{ item.Name }}</td>
+            <td>{{ item.Rarity }}</td>
+            <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
+            <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-pointer-o"></span></button></td>
+        </tr>
+    </table>
 </template>
 
 <script>
@@ -66,7 +64,10 @@ export default {
                 .catch(err => {
                     console.error(err); // eslint-disable-line no-console
                     this.error = JSON.stringify(err);
-                    setTimeout(() => this.updateItems(), 5000);
+                    setTimeout(() => {
+                        this.updateItems();
+                        this.error = '';
+                    }, 5000);
                 });
         },
         updateItemsWithChangedItems(items) {
@@ -123,12 +124,14 @@ export default {
                     const json = JSON.parse(data);
                     this.success = json.result.Messages[0];
                     this.error = '';
+                    setTimeout(() => { this.success = ''; }, 5000);
                     setTimeout(() => { this.itemsDisabled = false; }, 60000);
                 })
                 .catch(err => {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
                     this.success = '';
+                    setTimeout(() => { this.error = ''; }, 5000);
                     this.itemsDisabled = false;
                 });
         },

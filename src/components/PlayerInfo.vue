@@ -3,21 +3,36 @@
         <div>{{ name }}</div>
         <div>{{ points }}</div>
         <ul>
-            <li v-for"effect in effects">{{ effect }}</li>
+            <li v-for="effect in effects">{{ effect }}</li>
         </ul>
     </div>
 </template>
 
 <script>
- export default {
-     data() {
-         return {
-             name: 'meastes',
-             points: 123,
-             effects: ['a', 'b', 'c'],
-         };
-     },
- };
+import PlayerService from '../services/player.service';
+
+export default {
+    methods: {
+        getPlayerInfo() {
+            this.playerService.getPlayerInfo().then(info => {
+                this.name = info.Name;
+                this.points = info.Points;
+                this.effects = info.ActiveEffects;
+            });
+        },
+    },
+    data() {
+        return {
+            name: '',
+            points: 0,
+            effects: [],
+            playerService: new PlayerService(),
+        };
+    },
+    attached() {
+        this.getPlayerInfo();
+    },
+};
 </script>
 
 <style scoped>

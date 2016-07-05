@@ -24,7 +24,7 @@ export default class PlayerInfo {
             return {
                 Name: json.Fields[0].Name,
                 ActiveEffects: json.Fields[0].ActiveEffects,
-                Points: json.Fields[0].Name,
+                Points: json.Fields[0].Points,
             };
         })
         .catch(err => {

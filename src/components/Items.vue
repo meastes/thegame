@@ -1,12 +1,21 @@
 <template>
     <alert type="success" v-if="success">{{ success }}</alert>
     <alert type="danger" v-if="error">{{ error }}</alert>
-    <form class="form_target">
-        <div class="form-group">
-            <label>Target:</label>
-            <input class="form-control" v-model="target" placeholder="meastes" />
+    <div class="container header">
+        <div class="row">
+            <div class="col-md-10">
+                <player-info></player-info>
+            </div>
+            <div class="col-md-2">
+                <form class="form-target">
+                    <div class="form-group">
+                        <label>Target:</label>
+                        <input class="form-control" v-model="target" placeholder="meastes" />
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
     <div class="table-responsive">
         <table class="table table-striped">
             <tr>
@@ -38,6 +47,7 @@
 <script>
 import { alert, tooltip } from 'vue-strap';
 import ItemService from '../services/item.service';
+import PlayerInfo from './PlayerInfo';
 
 export default {
     methods: {
@@ -139,6 +149,7 @@ export default {
     components: {
         alert,
         tooltip,
+        PlayerInfo,
     },
 };
 </script>
@@ -150,10 +161,11 @@ export default {
 .img_item {
     width: 32px;
 }
-.form_target {
-    margin: 20px;
-    display: flex;
-    justify-content: center;
+.header {
+    padding-bottom: 10px;
+}
+.form-target {
+    padding-top: 15px;
 }
 .tooltip-container {
     position: relative;

@@ -68,6 +68,7 @@ export default {
                 // Update quantities in old items, and add missing items
                 updatedItems.forEach(item => {
                     if (oldItemMap.has(item.Name)) {
+                        oldItemMap.get(item.Name).Id = item.Id;
                         oldItemMap.get(item.Name).Quantity = item.Quantity;
                     } else {
                         oldItemMap.set(item.Name, item);

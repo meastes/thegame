@@ -1,11 +1,13 @@
 import express from 'express';
 
 import ItemStore from '../api/item.store';
+import PlayerInfo from '../api/player-info';
 import ItemActivator from '../api/item-activator';
 import PointRetriever from '../api/point-retriever';
 
 const app = express();
 const itemStore = new ItemStore();
+const playerInfo = new PlayerInfo();
 const itemActivator = new ItemActivator(itemStore);
 const pr = new PointRetriever(itemStore);
 pr.requestPoints();
@@ -17,10 +19,13 @@ app.use((req, res, next) => {
 });
 
 app.options('*', (req, res) => { res.sendStatus(200); });
-app.get('/items', (req, res) => {
+app.get('/player/info', (req, res) => {
+    playerInfo.getPlayerInfo().then(json => res.send(json));
+});
+app.get('/items/list', (req, res) => {
     itemStore.getItems().then(json => res.send(json));
 });
-app.post('/item/:id', (req, res) => {
+app.post('/items/use/:id', (req, res) => {
     itemActivator.useItem(req.params.id)
         .then(result => {
             const json = JSON.parse(result);
@@ -34,7 +39,7 @@ app.post('/item/:id', (req, res) => {
             error,
         })));
 });
-app.post('/item/:id/:target', (req, res) => {
+app.post('/items/use/:id/:target', (req, res) => {
     itemActivator.useItem(req.params.id, req.params.target)
         .then(result => {
             const json = JSON.parse(result);

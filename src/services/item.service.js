@@ -7,10 +7,10 @@ export default class ItemService {
         this._http = Vue.http;
     }
     getItems() {
-        return this._http.get(`${BASE_URL}/items`).then(res => res.data);
+        return this._http.get(`${BASE_URL}/items/list`).then(res => res.data);
     }
     useItem(id, target) {
-        let url = `${BASE_URL}/item/${id}`;
+        let url = `${BASE_URL}/items/use/${id}`;
         if (target) {
             url += `/${target}`;
         }

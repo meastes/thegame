@@ -10,7 +10,8 @@ export default {
 <style scoped>
 iframe {
     border: 0;
-    width: 100%;
+    width: 1px;
+    min-width: 100%;
     height: 1400px;
 }
 </style>

@@ -15,12 +15,7 @@
                 </form>
             </div>
         </div>
-        <div class="progress-cooldown" v-if="itemCDProgress > 0">
-            <p>Item Cooldown</p>
-            <div class="progress">
-                <progressbar :now="(itemCDProgress / 60) * 100" type="info"></progressbar>
-            </div>
-        </div>
+        <item-cooldown v-bind:cooldown="itemCDProgress"></item-cooldown>
     </div>
     <table class="table table-striped">
         <tr>
@@ -49,7 +44,8 @@
 </template>
 
 <script>
-import { alert, tooltip, progressbar } from 'vue-strap';
+import { alert, tooltip } from 'vue-strap';
+import ItemCooldown from './ItemCooldown';
 import ItemService from '../services/item.service';
 import PlayerInfo from './PlayerInfo';
 
@@ -168,7 +164,7 @@ export default {
     components: {
         alert,
         tooltip,
-        progressbar,
+        ItemCooldown,
         PlayerInfo,
     },
 };
@@ -189,9 +185,6 @@ export default {
 }
 .tooltip-container {
     position: relative;
-}
-.progress-cooldown {
-    margin: 15px 0px 15px 0px;
 }
 td {
     font-size: 13px;

@@ -3,18 +3,18 @@
         <div class="header">
             <h1>The Game</h1>
         </div>
-        <items></items>
+        <game></game>
         <leaderboard></leaderboard>
     </div>
 </template>
 
 <script>
-import Items from './components/Items';
+import Game from './components/Game';
 import Leaderboard from './components/Leaderboard';
 
 export default {
     components: {
-        Items,
+        Game,
         Leaderboard,
     },
 };

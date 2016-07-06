@@ -30,7 +30,7 @@
             <td>
                 <div class="tooltip-container">
                     <tooltip trigger="hover" placement="right" v-bind:content="item.Description">
-                        <img class="img_item" v-bind:src="this.getImageUrl(item.Name)" />
+                        <img class="img_item" v-bind:src="this.gameUtil.getImageUrl(item.Name)" />
                     </tooltip>
                 </div>
             </td>
@@ -45,18 +45,34 @@
 
 <script>
 import { alert, tooltip } from 'vue-strap';
-import ItemCooldown from './ItemCooldown';
+import ItemCooldown from './game/ItemCooldown';
+import PlayerInfo from './game/PlayerInfo';
 import ItemService from '../services/item.service';
-import PlayerInfo from './PlayerInfo';
+import GameUtil from '../util/game.util';
 
 export default {
+    components: {
+        alert,
+        tooltip,
+        ItemCooldown,
+        PlayerInfo,
+    },
+    data() {
+        return {
+            items: [],
+            target: '',
+            itemCDProgress: 0,
+            success: '',
+            error: '',
+            itemsDisabled: false,
+            itemService: new ItemService(),
+            gameUtil: new GameUtil(),
+        };
+    },
+    attached() {
+        this.updateItems();
+    },
     methods: {
-        getImageUrl(name) {
-            return `//cloud.nerderylabs.com/rogueone/media/images/${this.getKabobName(name)}.png`;
-        },
-        getKabobName(name) {
-            return name.toLowerCase().replace(/[':]/g, '').replace(/ /g, '-');
-        },
         updateItems() {
             this.itemService.getItems()
                 .then(items => {
@@ -75,57 +91,42 @@ export default {
         updateItemsWithChangedItems(items) {
             const oldItemMap = new Map();
             this.items.forEach(item => oldItemMap.set(item.Name, item));
-            const newItemMap = this.getSquashedItemMap(items);
-            const updatedItems = this.getUpdatedItems(oldItemMap, [...newItemMap.values()]);
+            const newItemMap = this.gameUtil.getSquashedItemMap(items);
+            const updatedItems =
+                this.gameUtil.getUpdatedItems(oldItemMap, [...newItemMap.values()]);
             if (updatedItems.length) {
                 // Update quantities in old items, and add missing items
-                updatedItems.forEach(item => {
-                    if (oldItemMap.has(item.Name)) {
-                        oldItemMap.get(item.Name).Id = item.Id;
-                        oldItemMap.get(item.Name).Quantity = item.Quantity;
-                    } else {
-                        oldItemMap.set(item.Name, item);
-                    }
-                });
+                const updatedItemMap = this.getUpdatedItemMap(oldItemMap, updatedItems);
                 // Sort the items by rarity and name
-                this.items = [...oldItemMap.values()].sort((a, b) => {
+                this.items = [...updatedItemMap.values()].sort((a, b) => {
                     const rarity = b.Rarity - a.Rarity;
                     if (rarity) return rarity;
                     return a.Name.toLowerCase().localeCompare(b.Name.toLowerCase());
                 });
             }
         },
-        getSquashedItemMap(items) {
-            const itemMap = new Map();
-            items.forEach(item => {
-                if (itemMap.has(item.Name)) {
-                    itemMap.get(item.Name).Quantity++;
+        getUpdatedItemMap(oldItemMap, updatedItems) {
+            const updatedItemMap = oldItemMap;
+            updatedItems.forEach(item => {
+                if (updatedItemMap.has(item.Name)) {
+                    updatedItemMap.get(item.Name).Id = item.Id;
+                    updatedItemMap.get(item.Name).Quantity = item.Quantity;
                 } else {
-                    const itemToAdd = item;
-                    itemToAdd.Quantity = 1;
-                    itemMap.set(item.Name, itemToAdd);
+                    updatedItemMap.set(item.Name, item);
                 }
             });
-            return itemMap;
-        },
-        getUpdatedItems(oldItemMap, newItems) {
-            return newItems.filter(item => {
-                const oldItem = oldItemMap.get(item.Name);
-                return oldItem === undefined || oldItem.Quantity !== item.Quantity;
-            });
+            return updatedItemMap;
         },
         useItem(id) {
             window.scrollTo(0, 0);
             this.itemsDisabled = true;
-            let target;
-            if (this.target !== '') {
-                target = this.target;
-            }
+            const target = this.target !== '' ? this.target : undefined;
             this.itemService.useItem(id, target)
                 .then(data => {
                     const json = JSON.parse(data);
                     this.success = json.result.Messages[0];
                     this.error = '';
+                    // Dismiss message after 5 seconds
                     setTimeout(() => { this.success = ''; }, 5000);
                     this.updateItemCooldownProgress();
                 })
@@ -133,6 +134,7 @@ export default {
                     const json = JSON.parse(err.data);
                     this.error = json.error.error;
                     this.success = '';
+                    // Dismiss message after 5 seconds
                     setTimeout(() => { this.error = ''; }, 5000);
                     this.itemsDisabled = false;
                 });
@@ -146,26 +148,6 @@ export default {
                 setTimeout(() => this.updateItemCooldownProgress(), 1000);
             }
         },
-    },
-    data() {
-        return {
-            items: [],
-            target: '',
-            itemCDProgress: 0,
-            success: '',
-            error: '',
-            itemsDisabled: false,
-            itemService: new ItemService(),
-        };
-    },
-    attached() {
-        this.updateItems();
-    },
-    components: {
-        alert,
-        tooltip,
-        ItemCooldown,
-        PlayerInfo,
     },
 };
 </script>

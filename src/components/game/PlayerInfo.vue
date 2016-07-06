@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import PlayerService from '../services/player.service';
+import PlayerService from '../../services/player.service';
 
 export default {
     methods: {

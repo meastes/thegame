@@ -24,4 +24,7 @@ export default class GameUtil {
             return oldItem === undefined || oldItem.Quantity !== item.Quantity;
         });
     }
+    escapeHtml(text) {
+        return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
 }

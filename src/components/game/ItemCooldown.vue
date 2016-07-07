@@ -1,5 +1,5 @@
 <template>
-    <div class="progress-cooldown" v-if="cooldown > 0">
+    <div class="progress-cooldown">
         <p>Item Cooldown</p>
         <div class="progress">
             <progressbar :now="(cooldown / 240) * 100" type="info"></progressbar>

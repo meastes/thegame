@@ -1,6 +1,5 @@
 <template>
-    <alert type="success" v-if="success">{{ success }}</alert>
-    <alert type="danger" v-if="error">{{ error }}</alert>
+    <vue-toastr v-ref:toastr></vue-toastr>
     <div class="container header">
         <div class="row">
             <div class="col-md-10">
@@ -15,7 +14,7 @@
                 </form>
             </div>
         </div>
-        <div v-if="itemQueue.length">
+        <div class="item-queue">
             <p>Item Queue</p>
             <span class="tooltip-container" v-for="queueEntry in itemQueue">
                 <tooltip trigger="hover" placement="bottom" v-bind:content="queueEntry.item.Description">
@@ -54,7 +53,9 @@
 </template>
 
 <script>
-import { alert, tooltip } from 'vue-strap';
+import { tooltip } from 'vue-strap';
+import vueToastr from 'vue-toastr';
+import 'vue-toastr/dist/vue-toastr.min.css';
 import ItemCooldown from './game/ItemCooldown';
 import PlayerInfo from './game/PlayerInfo';
 import ItemService from '../services/item.service';
@@ -62,8 +63,8 @@ import GameUtil from '../util/game.util';
 
 export default {
     components: {
-        alert,
         tooltip,
+        vueToastr,
         ItemCooldown,
         PlayerInfo,
     },
@@ -71,9 +72,6 @@ export default {
         return {
             items: [],
             target: '',
-            // Messages
-            success: '',
-            error: '',
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
@@ -83,6 +81,7 @@ export default {
         };
     },
     attached() {
+        this.toast = this.$refs.toastr;
         this.updateItems();
         this.processItemQueue();
     },
@@ -95,11 +94,8 @@ export default {
                 })
                 .catch(err => {
                     console.error(err); // eslint-disable-line no-console
-                    this.error = JSON.stringify(err);
-                    setTimeout(() => {
-                        this.updateItems();
-                        this.error = '';
-                    }, 5000);
+                    this.toast.e(JSON.stringify(err), 'Error');
+                    setTimeout(() => this.updateItems(), 5000);
                 });
         },
         updateItemsWithChangedItems(items) {
@@ -136,9 +132,10 @@ export default {
             return updatedItemMap;
         },
         useItem(item) {
-            window.scrollTo(0, 0);
             const target = this.target !== '' ? this.target : undefined;
             this.itemQueue.push({ item, target });
+            this.toast.i(`Added item (${item.Name}) with target ` +
+                `(${target || 'meastes'}) to the queue`, 'Item Queued');
         },
         processItemQueue() {
             if (this.itemQueue.length) {
@@ -147,20 +144,15 @@ export default {
                 this.itemService.useItem(id, target)
                     .then(data => {
                         const json = JSON.parse(data);
-                        this.success = json.result.Messages[0];
-                        this.error = '';
-                        // Dismiss message after 5 seconds
-                        setTimeout(() => { this.success = ''; }, 5000);
+                        this.toast.s(
+                            this.gameUtil.escapeHtml(json.result.Messages[0]), 'Item used');
                         this.itemCDProgress = 0;
                         this.updateItemCooldownProgress();
                         setTimeout(() => this.processItemQueue(), 61000);
                     })
                     .catch(err => {
                         const json = JSON.parse(err.data);
-                        this.error = json.error.error;
-                        this.success = '';
-                        // Dismiss message after 5 seconds
-                        setTimeout(() => { this.error = ''; }, 5000);
+                        this.toast.e(json.error.error, 'Error');
                         this.processItemQueue();
                     });
             } else {
@@ -194,6 +186,9 @@ export default {
 }
 .form-target {
     padding-top: 15px;
+}
+.item-queue {
+    height: 64px;
 }
 .tooltip-container {
     position: relative;

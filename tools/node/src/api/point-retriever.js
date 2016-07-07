@@ -27,11 +27,11 @@ export default class PointRetriever {
                 this.itemStore.addItem(json.Item.Fields[0]);
             }
             this.log.debug(json);
-            setTimeout(() => this.requestPoints(), 1000);
+            setTimeout(() => this.requestPoints(), 1050);
         })
         .catch(err => {
             this.log.error(err);
-            setTimeout(() => this.requestPoints(), 1000);
+            setTimeout(() => this.requestPoints(), 1050);
         });
     }
 }

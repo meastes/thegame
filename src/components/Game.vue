@@ -15,6 +15,14 @@
                 </form>
             </div>
         </div>
+        <div v-if="itemQueue.length">
+            <p>Item Queue</p>
+            <span class="tooltip-container" v-for="queueEntry in itemQueue">
+                <tooltip trigger="hover" placement="bottom" v-bind:content="queueEntry.item.Description">
+                    <img class="img-item" v-bind:src="this.gameUtil.getImageUrl(queueEntry.item.Name)" />
+                </tooltip>
+            </span>
+        </div>
         <item-cooldown v-bind:cooldown="itemCDProgress"></item-cooldown>
     </div>
     <table class="table table-striped">
@@ -30,7 +38,7 @@
             <td>
                 <div class="tooltip-container">
                     <tooltip trigger="hover" placement="right" v-bind:content="item.Description">
-                        <img class="img_item" v-bind:src="this.gameUtil.getImageUrl(item.Name)" />
+                        <img class="img-item" v-bind:src="this.gameUtil.getImageUrl(item.Name)" />
                     </tooltip>
                 </div>
             </td>
@@ -38,7 +46,9 @@
             <td>{{ item.Name }}</td>
             <td>{{ item.Rarity }}</td>
             <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
-            <td><button class="btn btn-primary" @click="this.useItem(item.Id)" v-bind:disabled="itemsDisabled"><span class="fa fa-hand-pointer-o"></span></button></td>
+            <td>
+                <button class="btn btn-primary" @click="this.useItem(item)"><span class="fa fa-hand-pointer-o"></span></button>
+            </td>
         </tr>
     </table>
 </template>
@@ -61,16 +71,20 @@ export default {
         return {
             items: [],
             target: '',
-            itemCDProgress: 0,
+            // Messages
             success: '',
             error: '',
-            itemsDisabled: false,
+            // Item state
+            itemCDProgress: 0,
+            itemQueue: [],
+            // Internal use
             itemService: new ItemService(),
             gameUtil: new GameUtil(),
         };
     },
     attached() {
         this.updateItems();
+        this.processItemQueue();
     },
     methods: {
         updateItems() {
@@ -89,8 +103,7 @@ export default {
                 });
         },
         updateItemsWithChangedItems(items) {
-            const oldItemMap = new Map();
-            this.items.forEach(item => oldItemMap.set(item.Name, item));
+            const oldItemMap = this.getItemMap();
             const newItemMap = this.gameUtil.getSquashedItemMap(items);
             const updatedItems =
                 this.gameUtil.getUpdatedItems(oldItemMap, [...newItemMap.values()]);
@@ -105,6 +118,11 @@ export default {
                 });
             }
         },
+        getItemMap() {
+            const itemMap = new Map();
+            this.items.forEach(item => itemMap.set(item.Name, item));
+            return itemMap;
+        },
         getUpdatedItemMap(oldItemMap, updatedItems) {
             const updatedItemMap = oldItemMap;
             updatedItems.forEach(item => {
@@ -117,35 +135,44 @@ export default {
             });
             return updatedItemMap;
         },
-        useItem(id) {
+        useItem(item) {
             window.scrollTo(0, 0);
-            this.itemsDisabled = true;
             const target = this.target !== '' ? this.target : undefined;
-            this.itemService.useItem(id, target)
-                .then(data => {
-                    const json = JSON.parse(data);
-                    this.success = json.result.Messages[0];
-                    this.error = '';
-                    // Dismiss message after 5 seconds
-                    setTimeout(() => { this.success = ''; }, 5000);
-                    this.updateItemCooldownProgress();
-                })
-                .catch(err => {
-                    const json = JSON.parse(err.data);
-                    this.error = json.error.error;
-                    this.success = '';
-                    // Dismiss message after 5 seconds
-                    setTimeout(() => { this.error = ''; }, 5000);
-                    this.itemsDisabled = false;
-                });
+            this.itemQueue.push({ item, target });
+        },
+        processItemQueue() {
+            if (this.itemQueue.length) {
+                const { item, target } = this.itemQueue.shift();
+                const id = this.getItemMap().get(item.Name).Id; // Get the most recent ID
+                this.itemService.useItem(id, target)
+                    .then(data => {
+                        const json = JSON.parse(data);
+                        this.success = json.result.Messages[0];
+                        this.error = '';
+                        // Dismiss message after 5 seconds
+                        setTimeout(() => { this.success = ''; }, 5000);
+                        this.itemCDProgress = 0;
+                        this.updateItemCooldownProgress();
+                        setTimeout(() => this.processItemQueue(), 61000);
+                    })
+                    .catch(err => {
+                        const json = JSON.parse(err.data);
+                        this.error = json.error.error;
+                        this.success = '';
+                        // Dismiss message after 5 seconds
+                        setTimeout(() => { this.error = ''; }, 5000);
+                        this.processItemQueue();
+                    });
+            } else {
+                setTimeout(() => this.processItemQueue(), 1000);
+            }
         },
         updateItemCooldownProgress() {
-            if (this.itemCDProgress > 59) {
+            if (this.itemCDProgress > 239) {
                 this.itemCDProgress = 0;
-                this.itemsDisabled = false;
             } else {
                 this.itemCDProgress++;
-                setTimeout(() => this.updateItemCooldownProgress(), 1000);
+                setTimeout(() => this.updateItemCooldownProgress(), 250);
             }
         },
     },
@@ -156,8 +183,11 @@ export default {
 .alert {
     margin: 10px;
 }
-.img_item {
+.img-item {
     width: 32px;
+}
+.img-item-small {
+    width: 16px;
 }
 .header {
     padding-bottom: 10px;

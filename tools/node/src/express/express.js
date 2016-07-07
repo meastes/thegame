@@ -19,10 +19,10 @@ app.use((req, res, next) => {
 });
 
 app.options('*', (req, res) => { res.sendStatus(200); });
-app.get('/player/info', (req, res) => {
+app.get('/player', (req, res) => {
     playerInfo.getPlayerInfo().then(json => res.send(json));
 });
-app.get('/items/list', (req, res) => {
+app.get('/items', (req, res) => {
     itemStore.getItems().then(json => res.send(json));
 });
 app.post('/items/use/:id', (req, res) => {

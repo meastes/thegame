@@ -15,9 +15,11 @@ export default {
     methods: {
         getPlayerInfo() {
             this.playerService.getPlayerInfo().then(info => {
-                this.name = info.Name;
-                this.points = info.Points;
-                this.effects = info.ActiveEffects;
+                if (info.Name && info.Points) {
+                    this.name = info.Name;
+                    this.points = info.Points;
+                    this.effects = info.ActiveEffects;
+                }
                 setTimeout(() => this.getPlayerInfo(), 1000);
             });
         },

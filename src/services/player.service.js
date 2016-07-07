@@ -7,6 +7,6 @@ export default class PlayerService {
         this._http = Vue.http;
     }
     getPlayerInfo() {
-        return this._http.get(`${BASE_URL}/player/info`).then(res => res.data);
+        return this._http.get(`${BASE_URL}/player`).then(res => res.data);
     }
 }

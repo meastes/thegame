@@ -16,13 +16,20 @@
         </div>
         <div class="item-queue">
             <p>Item Queue</p>
-            <span class="tooltip-container" v-for="queueEntry in itemQueue">
-                <tooltip trigger="hover" placement="bottom" v-bind:content="`Target: ${queueEntry.target || 'meastes'}`">
-                    <img class="img-item" v-bind:src="this.gameUtil.getImageUrl(queueEntry.item.Name)" />
-                </tooltip>
-            </span>
+            <div class="item-queue-items" v-if="itemQueue.length">
+                <span class="tooltip-container" v-for="queueEntry in itemQueue">
+                    <tooltip trigger="hover" placement="bottom" v-bind:content="`Target: ${queueEntry.target || 'meastes'}`">
+                        <img class="img-item" v-bind:src="this.gameUtil.getImageUrl(queueEntry.item.Name)" />
+                    </tooltip>
+                </span>
+            </div>
+            <div v-if="!itemQueue.length">
+                <small>No items currently queued.</small>
+            </div>
         </div>
-        <item-cooldown v-ref:cooldown></item-cooldown>
+        <div class="item-cooldown-container">
+            <item-cooldown v-ref:cooldown></item-cooldown>
+        </div>
     </div>
     <table class="table table-striped">
         <tr>
@@ -179,6 +186,14 @@ export default {
     padding-top: 15px;
 }
 .item-queue {
+    height: 64px;
+}
+.item-queue-items {
+    background-color: #444;
+    border-radius: 5px;
+    padding: 5px;
+}
+.item-cooldown-container {
     height: 64px;
 }
 .tooltip-container {

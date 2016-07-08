@@ -17,12 +17,12 @@
         <div class="item-queue">
             <p>Item Queue</p>
             <span class="tooltip-container" v-for="queueEntry in itemQueue">
-                <tooltip trigger="hover" placement="bottom" v-bind:content="queueEntry.item.Description">
+                <tooltip trigger="hover" placement="bottom" v-bind:content="`Target: ${queueEntry.target || 'meastes'}`">
                     <img class="img-item" v-bind:src="this.gameUtil.getImageUrl(queueEntry.item.Name)" />
                 </tooltip>
             </span>
         </div>
-        <item-cooldown v-bind:cooldown="itemCDProgress"></item-cooldown>
+        <item-cooldown v-ref:cooldown></item-cooldown>
     </div>
     <table class="table table-striped">
         <tr>
@@ -75,6 +75,7 @@ export default {
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
+            itemQueueTimeout: null,
             // Internal use
             itemService: new ItemService(),
             gameUtil: new GameUtil(),
@@ -88,15 +89,12 @@ export default {
     methods: {
         updateItems() {
             this.itemService.getItems()
-                .then(items => {
-                    this.updateItemsWithChangedItems(items);
-                    setTimeout(() => this.updateItems(), 5000);
-                })
+                .then(items => this.updateItemsWithChangedItems(items))
                 .catch(err => {
                     console.error(err); // eslint-disable-line no-console
                     this.toast.e(JSON.stringify(err), 'Error');
-                    setTimeout(() => this.updateItems(), 5000);
-                });
+                })
+                .finally(() => setTimeout(() => this.updateItems(), 5000));
         },
         updateItemsWithChangedItems(items) {
             const oldItemMap = this.getItemMap();
@@ -146,9 +144,9 @@ export default {
                         const json = JSON.parse(data);
                         this.toast.s(
                             this.gameUtil.escapeHtml(json.result.Messages[0]), 'Item used');
-                        this.itemCDProgress = 0;
-                        this.updateItemCooldownProgress();
-                        setTimeout(() => this.processItemQueue(), 61000);
+                        this.$refs.cooldown.start();
+                        clearTimeout(this.itemQueueTimeout);
+                        this.itemQueueTimeout = setTimeout(() => this.processItemQueue(), 61000);
                     })
                     .catch(err => {
                         const json = JSON.parse(err.data);
@@ -156,15 +154,8 @@ export default {
                         this.processItemQueue();
                     });
             } else {
-                setTimeout(() => this.processItemQueue(), 1000);
-            }
-        },
-        updateItemCooldownProgress() {
-            if (this.itemCDProgress > 239) {
-                this.itemCDProgress = 0;
-            } else {
-                this.itemCDProgress++;
-                setTimeout(() => this.updateItemCooldownProgress(), 250);
+                clearTimeout(this.itemQueueTimeout);
+                this.itemQueueTimeout = setTimeout(() => this.processItemQueue(), 1000);
             }
         },
     },

@@ -31,7 +31,9 @@ export default class ItemActivator {
         })
         .catch(err => {
             this.log.error(err);
-            this.itemStore.removeItem(itemId);
+            if (err.statusCode === 400) {
+                this.itemStore.removeItem(itemId);
+            }
             return Promise.reject(err);
         });
     }

@@ -82,6 +82,8 @@ export default {
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
+            // Timeouts
+            itemUpdateTimeout: null,
             itemQueueTimeout: null,
             // Internal use
             itemService: new ItemService(),
@@ -95,13 +97,16 @@ export default {
     },
     methods: {
         updateItems() {
-            this.itemService.getItems()
+            return this.itemService.getItems()
                 .then(items => this.updateItemsWithChangedItems(items))
                 .catch(err => {
                     console.error(err); // eslint-disable-line no-console
                     this.toast.e(JSON.stringify(err), 'Error');
                 })
-                .finally(() => setTimeout(() => this.updateItems(), 5000));
+                .finally(() => {
+                    clearTimeout(this.itemUpdateTimeout);
+                    this.itemUpdateTimeout = setTimeout(() => this.updateItems(), 5000);
+                });
         },
         updateItemsWithChangedItems(items) {
             const oldItemMap = this.getItemMap();
@@ -158,7 +163,9 @@ export default {
                     .catch(err => {
                         const json = JSON.parse(err.data);
                         this.toast.e(json.error.error, 'Error');
-                        this.processItemQueue();
+                        this.itemQueue.unshift({ item, target });
+                        clearTimeout(this.updateTimeTimeout);
+                        this.updateItems().then(() => this.processItemQueue());
                     });
             } else {
                 clearTimeout(this.itemQueueTimeout);

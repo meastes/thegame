@@ -4,7 +4,7 @@ import Log from 'log';
 import request from 'request-promise';
 import apiConfig from '../../../../config/api.config';
 
-const URL_ITEMS = 'http://thegame.nerderylabs.com/items/use/';
+const URL_ITEMS = 'http://thegame.nerderylabs.com:1337/items/use/';
 
 export default class ItemActivator {
     constructor(itemStore) {

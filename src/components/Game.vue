@@ -144,8 +144,8 @@ export default {
         useItem(item) {
             const target = this.target !== '' ? this.target : undefined;
             this.itemQueue.push({ item, target });
-            this.toast.i(`Added item (${item.Name}) with target ` +
-                `(${target || 'meastes'}) to the queue`, 'Item Queued');
+            this.toast.i(`Added item [${item.Name}] with target ` +
+                `[${target || 'meastes'}] to the queue`, 'Item Queued');
         },
         processItemQueue() {
             if (this.itemQueue.length) {

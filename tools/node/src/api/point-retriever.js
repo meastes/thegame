@@ -10,6 +10,7 @@ export default class PointRetriever {
         this.log =
             new Log('debug', fs.createWriteStream('./logs/point-retriever.log', { flags: 'a' }));
         this.itemStore = itemStore;
+        this.errorCount = 0;
     }
 
     requestPoints() {
@@ -22,16 +23,24 @@ export default class PointRetriever {
         })
         .then(res => {
             const json = JSON.parse(res);
+            this.log.debug(json);
+            this.errorCount = 0;
             if (json.Item) {
                 this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
                 this.itemStore.addItem(json.Item.Fields[0]);
             }
-            this.log.debug(json);
             setTimeout(() => this.requestPoints(), 1050);
         })
         .catch(err => {
             this.log.error(err);
-            setTimeout(() => this.requestPoints(), 1050);
+            this.errorCount++;
+            if (this.errorCount > 10) {
+                this.log.debug(
+                    `Encountered ${this.errorCount} consecutive errors. Sleeping for 30 minutes.`);
+                setTimeout(() => this.requestPoints(), 60 * 30 * 1000);
+            } else {
+                setTimeout(() => this.requestPoints(), 1050);
+            }
         });
     }
 }

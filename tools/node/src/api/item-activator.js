@@ -18,6 +18,7 @@ export default class ItemActivator {
         if (target) {
             url += `?target=${target}`;
         }
+        this.log.debug(`Using item with ID [${itemId}] on target [${target}]`);
         return request.post({
             url,
             headers: {

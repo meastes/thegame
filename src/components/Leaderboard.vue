@@ -1,11 +1,16 @@
 <template>
     <div class="leaderboard-container">
-        <iframe src="http://thegame.nerderylabs.com"></iframe>
+        <iframe v-bind:src="url"></iframe>
     </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            url: 'http://thegameleaderboard.azurewebsites.net/#meastes',
+        };
+    },
 };
 </script>
 

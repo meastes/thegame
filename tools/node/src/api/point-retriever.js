@@ -4,6 +4,7 @@ import request from 'request-promise';
 import apiConfig from '../../../../config/api.config';
 
 const URL_POINTS = 'http://thegame.nerderylabs.com:1337/points';
+const MAX_CONSECUTIVE_ERRORS = 5;
 
 export default class PointRetriever {
     constructor(itemStore) {
@@ -34,7 +35,7 @@ export default class PointRetriever {
         .catch(err => {
             this.log.error(err);
             this.errorCount++;
-            if (this.errorCount > 10) {
+            if (this.errorCount >= MAX_CONSECUTIVE_ERRORS) {
                 this.log.debug(
                     `Encountered ${this.errorCount} consecutive errors. Sleeping for 30 minutes.`);
                 setTimeout(() => this.requestPoints(), 60 * 30 * 1000);

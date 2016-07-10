@@ -1,7 +1,10 @@
 <template>
     <div id="app">
         <div class="header">
-            <h1>The Game</h1>
+            <div>
+                <h1>The Game</h1>
+                <small class="site-link"><a href="http://thegame.nerderylabs.com">Official Site</a></small>
+            </div>
         </div>
         <game></game>
         <leaderboard></leaderboard>
@@ -21,7 +24,7 @@ export default {
 </script>
 
 <style scoped>
-.header {
+.header, .site-link {
     display: flex;
     justify-content: center;
 }

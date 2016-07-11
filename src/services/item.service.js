@@ -7,7 +7,10 @@ export default class ItemService {
         this._http = Vue.http;
     }
     getItems() {
-        return this._http.get(`${BASE_URL}/items`).then(res => res.data);
+        // For the time being filter out any items that have a created timestamp
+        // Later we will ensure items are only 48 hours old.
+        return this._http.get(`${BASE_URL}/items`)
+            .then(res => res.data.filter(item => !item.Created));
     }
     useItem(id, target) {
         let url = `${BASE_URL}/items/use/${id}`;

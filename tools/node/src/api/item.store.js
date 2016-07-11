@@ -18,6 +18,10 @@ export default class ItemStore {
             }));
     }
 
+    getItemByName(name) {
+        return this.getItems().then(items => items.filter(item => item.Name === name));
+    }
+
     addItem(item) {
         const itemDoc = { _id: item.Id, item, created: Date.now() };
         this.log.debug(`Adding item: ${JSON.stringify(itemDoc)}`);

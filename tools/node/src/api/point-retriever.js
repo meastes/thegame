@@ -25,6 +25,15 @@ export default class PointRetriever {
         .then(res => {
             const json = JSON.parse(res);
             this.log.debug(json);
+            if (json.Messages) {
+                for (const message of json.Messages) {
+                    if (message.includes('angered the gods')) {
+                        throw new Error(json);
+                    } else if (message.includes('treasure')) {
+                        this._addBonusItem(message);
+                    }
+                }
+            }
             this.errorCount = 0;
             if (json.Item) {
                 this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
@@ -42,6 +51,22 @@ export default class PointRetriever {
             } else {
                 setTimeout(() => this.requestPoints(), 990);
             }
+        });
+    }
+
+    _addBonusItem(message) {
+        const msgParts = message.split('|');
+        const id = msgParts[0].substring(
+            msgParts[0].indexOf('<') + 1,
+            msgParts[0].indexOf('>'));
+        const name = msgParts[1].substring(
+            msgParts[1].indexOf('<') + 1,
+            msgParts[1].indexOf('>'));
+        this.itemStore.getItemByName(name).then(items => {
+            const goodItem = items[0];
+            goodItem.Id = id;
+            delete goodItem.Created;
+            this.itemStore.addItem(goodItem);
         });
     }
 }

@@ -15,8 +15,9 @@ export default class ItemStore {
     }
 
     addItem(item) {
-        this.log.debug(`Adding item: ${JSON.stringify(item)}`);
-        this.itemDb.put({ _id: item.Id, item, created: Date.now() });
+        const itemDoc = { _id: item.Id, item, created: Date.now() };
+        this.log.debug(`Adding item: ${JSON.stringify(itemDoc)}`);
+        this.itemDb.put(itemDoc);
         this.itemDb.allDocs().then(docs => this.log.debug(`New item count: ${docs.rows.length}`));
     }
 

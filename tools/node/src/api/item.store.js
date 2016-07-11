@@ -11,7 +11,11 @@ export default class ItemStore {
 
     getItems() {
         return this.itemDb.allDocs({ include_docs: true })
-            .then(data => data.rows.map(doc => doc.doc.item));
+            .then(data => data.rows.map(row => {
+                const item = row.doc.item;
+                item.Created = row.doc.created;
+                return item;
+            }));
     }
 
     addItem(item) {

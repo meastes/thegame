@@ -30,7 +30,7 @@ export default class PointRetriever {
                 this.log.debug(`Got an item; adding it to the store: ${json.Item}`);
                 this.itemStore.addItem(json.Item.Fields[0]);
             }
-            setTimeout(() => this.requestPoints(), 1050);
+            setTimeout(() => this.requestPoints(), 990);
         })
         .catch(err => {
             this.log.error(err);
@@ -40,7 +40,7 @@ export default class PointRetriever {
                     `Encountered ${this.errorCount} consecutive errors. Sleeping for 30 minutes.`);
                 setTimeout(() => this.requestPoints(), 60 * 30 * 1000);
             } else {
-                setTimeout(() => this.requestPoints(), 1050);
+                setTimeout(() => this.requestPoints(), 990);
             }
         });
     }

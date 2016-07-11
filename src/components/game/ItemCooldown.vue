@@ -31,6 +31,7 @@ export default {
                 this.progress = 0;
             } else {
                 this.progress++;
+                clearTimeout(this.progressTracker);
                 this.progressTimeout = setTimeout(() => this.updateProgress(), 250);
             }
         },

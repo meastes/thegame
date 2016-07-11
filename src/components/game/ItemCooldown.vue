@@ -22,12 +22,13 @@ export default {
     },
     methods: {
         start() {
-            this.progress = 0;
             clearTimeout(this.progressTracker);
+            this.progress = 0;
             this.updateProgress();
         },
         updateProgress() {
-            if (this.progress > 239) {
+            if (this.progress > 240) {
+                clearTimeout(this.progressTimeout);
                 this.progress = 0;
             } else {
                 this.progress++;

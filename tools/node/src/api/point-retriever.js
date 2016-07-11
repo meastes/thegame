@@ -27,6 +27,7 @@ export default class PointRetriever {
             this.log.debug(json);
             if (json.Messages) {
                 for (const message of json.Messages) {
+                    this.log.debug(`Parsing message: ${message}`);
                     if (message.includes('angered the gods')) {
                         throw new Error(json);
                     } else if (message.includes('treasure')) {

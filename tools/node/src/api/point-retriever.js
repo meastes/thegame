@@ -30,6 +30,7 @@ export default class PointRetriever {
                     if (message.includes('angered the gods')) {
                         throw new Error(json);
                     } else if (message.includes('treasure')) {
+                        this.log.debug(`Found bonus item: ${message}`);
                         this._addBonusItem(message);
                     }
                 }

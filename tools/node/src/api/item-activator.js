@@ -28,6 +28,16 @@ export default class ItemActivator {
         .then(res => {
             this.log.debug(res);
             this.itemStore.removeItem(itemId);
+            const json = JSON.parse(res);
+            if (json.Messages) {
+                for (const message of json.Messages) {
+                    this.log.debug(`Parsing message: ${message}`);
+                    if (message.includes('treasure')) {
+                        this.log.debug(`Found bonus item: ${message}`);
+                        this._addBonusItem(message);
+                    }
+                }
+            }
             return res;
         })
         .catch(err => {
@@ -36,6 +46,22 @@ export default class ItemActivator {
                 this.itemStore.removeItem(itemId);
             }
             return Promise.reject(err);
+        });
+    }
+
+    _addBonusItem(message) {
+        const msgParts = message.split('|');
+        const id = msgParts[0].substring(
+            msgParts[0].indexOf('<') + 1,
+            msgParts[0].indexOf('>'));
+        const name = msgParts[1].substring(
+            msgParts[1].indexOf('<') + 1,
+            msgParts[1].indexOf('>'));
+        this.itemStore.getItemByName(name).then(items => {
+            const goodItem = items[0];
+            goodItem.Id = id;
+            delete goodItem.Created;
+            this.itemStore.addItem(goodItem);
         });
     }
 }

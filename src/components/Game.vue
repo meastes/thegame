@@ -15,7 +15,11 @@
                         <label>
                             <input type="checkbox" v-model="cooldownEnabled" /> Cooldown Enabled
                         </label>
-
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" v-model="autoBuff" /> Auto-Buff
+                        </label>
                     </div>
                 </form>
             </div>
@@ -76,6 +80,7 @@ import 'vue-toastr/dist/vue-toastr.min.css';
 import ItemCooldown from './game/ItemCooldown';
 import PlayerInfo from './game/PlayerInfo';
 import ItemService from '../services/item.service';
+import PlayerService from '../services/player.service';
 import GameUtil from '../util/game.util';
 
 export default {
@@ -90,14 +95,17 @@ export default {
             items: [],
             target: '',
             cooldownEnabled: false,
+            autoBuff: false,
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
             // Timeouts
             itemUpdateTimeout: null,
             itemQueueTimeout: null,
+            applyBuffsTimeout: null,
             // Internal use
             itemService: new ItemService(),
+            playerService: new PlayerService(),
             gameUtil: new GameUtil(),
         };
     },
@@ -105,6 +113,7 @@ export default {
         this.toast = this.$refs.toastr;
         this.updateItems();
         this.processItemQueue();
+        this.applyBuffs();
     },
     methods: {
         updateItems() {
@@ -191,6 +200,28 @@ export default {
             } else {
                 clearTimeout(this.itemQueueTimeout);
                 this.itemQueueTimeout = setTimeout(() => this.processItemQueue(), 1000);
+            }
+        },
+        applyBuffs() {
+            if (this.autoBuff) {
+                this.playerService.getPlayerInfo()
+                    .then(info => {
+                        if (info.ActiveEffects) {
+                            if (info.ActiveEffects.indexOf('Moogle') === -1) {
+                                this.useItem({ Name: 'Moogle' });
+                            }
+                            if (info.ActiveEffects.indexOf('Warthog') === -1) {
+                                this.useItem({ Name: 'Warthog' });
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        clearTimeout(this.applyBuffsTimeout);
+                        this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 10000);
+                    });
+            } else {
+                clearTimeout(this.applyBuffsTimeout);
+                this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 10000);
             }
         },
     },

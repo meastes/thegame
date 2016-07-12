@@ -11,6 +11,12 @@
                         <label>Target:</label>
                         <input class="form-control" v-model="target" placeholder="meastes" />
                     </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" v-model="cooldownEnabled" /> Cooldown Enabled
+                        </label>
+
+                    </div>
                 </form>
             </div>
         </div>
@@ -27,7 +33,7 @@
                 <small>No items currently queued.</small>
             </div>
         </div>
-        <div class="item-cooldown-container">
+        <div class="item-cooldown-container" v-if="cooldownEnabled">
             <item-cooldown v-ref:cooldown></item-cooldown>
         </div>
     </div>
@@ -79,6 +85,7 @@ export default {
         return {
             items: [],
             target: '',
+            cooldownEnabled: true,
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
@@ -156,9 +163,14 @@ export default {
                         const json = JSON.parse(data);
                         this.toast.s(
                             this.gameUtil.escapeHtml(json.result.Messages[0]), 'Item used');
-                        this.$refs.cooldown.start();
-                        clearTimeout(this.itemQueueTimeout);
-                        this.itemQueueTimeout = setTimeout(() => this.processItemQueue(), 61000);
+                        let itemDelay = 300;
+                        if (this.cooldownEnabled) {
+                            this.$refs.cooldown.start();
+                            clearTimeout(this.itemQueueTimeout);
+                            itemDelay = 60000;
+                        }
+                        this.itemQueueTimeout =
+                            setTimeout(() => this.processItemQueue(), itemDelay);
                     })
                     .catch(err => {
                         const json = JSON.parse(err.data);

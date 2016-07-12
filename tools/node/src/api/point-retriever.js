@@ -45,8 +45,8 @@ export default class PointRetriever {
             this.errorCount++;
             if (this.errorCount >= MAX_CONSECUTIVE_ERRORS) {
                 this.log.debug(
-                    `Encountered ${this.errorCount} consecutive errors. Sleeping for 30 minutes.`);
-                setTimeout(() => this.requestPoints(), 60 * 30 * 1000);
+                    `Encountered ${this.errorCount} consecutive errors. Sleeping for 10 minutes.`);
+                setTimeout(() => this.requestPoints(), 60 * 10 * 1000);
             } else {
                 setTimeout(() => this.requestPoints(), 990);
             }

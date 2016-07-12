@@ -64,7 +64,7 @@
             <td>{{ item.Rarity }}</td>
             <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
             <td>
-                <button class="btn btn-primary" @click="this.useItem(item)"><span class="fa fa-hand-pointer-o"></span></button>
+                <button class="btn btn-primary" v-bind:data-item-id="item.Id" @click="this.useItem(item)"><span class="fa fa-hand-pointer-o"></span></button>
             </td>
             <td>
                 <button class="btn btn-primary" @click="this.use100Items(item)">x100</button>

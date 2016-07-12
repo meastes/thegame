@@ -45,6 +45,7 @@
             <th>Rarity</th>
             <th class="hidden-sm hidden-xs">Description</th>
             <th></th>
+            <th></th>
         </tr>
         <tr v-for="item in items">
             <td>
@@ -60,6 +61,9 @@
             <td class="hidden-sm hidden-xs">{{ item.Description }}</td>
             <td>
                 <button class="btn btn-primary" @click="this.useItem(item)"><span class="fa fa-hand-pointer-o"></span></button>
+            </td>
+            <td>
+                <button class="btn btn-primary" @click="this.use100Items(item)">x100</button>
             </td>
         </tr>
     </table>
@@ -85,7 +89,7 @@ export default {
         return {
             items: [],
             target: '',
-            cooldownEnabled: true,
+            cooldownEnabled: false,
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
@@ -147,6 +151,11 @@ export default {
                 }
             });
             return updatedItemMap;
+        },
+        use100Items(item) {
+            for (let i = 0; i < 100; i++) {
+                this.useItem(item);
+            }
         },
         useItem(item) {
             const target = this.target !== '' ? this.target : undefined;

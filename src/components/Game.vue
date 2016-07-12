@@ -199,7 +199,7 @@ export default {
     width: 16px;
 }
 .header {
-    padding-bottom: 10px;
+    padding-bottom: 30px;
 }
 .form-target {
     padding-top: 15px;

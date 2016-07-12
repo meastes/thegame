@@ -83,6 +83,9 @@ import ItemService from '../services/item.service';
 import PlayerService from '../services/player.service';
 import GameUtil from '../util/game.util';
 
+const MOOGLE = 'Moogle';
+const WARTHOG = 'Warthog';
+
 export default {
     components: {
         tooltip,
@@ -207,11 +210,13 @@ export default {
                 this.playerService.getPlayerInfo()
                     .then(info => {
                         if (info.ActiveEffects) {
-                            if (info.ActiveEffects.indexOf('Moogle') === -1) {
-                                this.useItem({ Name: 'Moogle' });
+                            if (info.ActiveEffects.indexOf(MOOGLE) === -1 &&
+                                this.itemQueue.filter(item => item.Name === MOOGLE).length === 0) {
+                                this.useItem({ Name: MOOGLE });
                             }
-                            if (info.ActiveEffects.indexOf('Warthog') === -1) {
-                                this.useItem({ Name: 'Warthog' });
+                            if (info.ActiveEffects.indexOf(WARTHOG) === -1 &&
+                                this.itemQueue.filter(item => item.Name === WARTHOG).length === 0) {
+                                this.useItem({ Name: WARTHOG });
                             }
                         }
                     })

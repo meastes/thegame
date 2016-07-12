@@ -2,7 +2,7 @@ import fs from 'fs';
 import Log from 'log';
 import request from 'request-promise';
 
-const URL_POINTS = 'http://thegame.nerderylabs.com:1337/points';
+const URL_POINTS = 'http://thegame.nerderylabs.com:1337/points/meastes';
 
 export default class PlayerInfo {
     constructor() {

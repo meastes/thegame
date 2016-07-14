@@ -201,7 +201,7 @@ export default {
                         if (this.cooldownEnabled) {
                             this.$refs.cooldown.start();
                             clearTimeout(this.itemQueueTimeout);
-                            itemDelay = 60000;
+                            itemDelay = 15000;
                         }
                         this.itemQueueTimeout =
                             setTimeout(() => this.processItemQueue(), itemDelay);

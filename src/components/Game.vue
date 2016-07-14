@@ -108,7 +108,7 @@ export default {
         return {
             items: [],
             target: '',
-            cooldownEnabled: false,
+            cooldownEnabled: true,
             autoBuff: false,
             autoProtect: false,
             // Item state

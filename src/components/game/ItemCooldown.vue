@@ -2,7 +2,7 @@
     <div class="progress-cooldown">
         <p>Item Cooldown</p>
         <div class="progress">
-            <progressbar :now="(progress / 240) * 100" type="info"></progressbar>
+            <progressbar :now="(progress / 60) * 100" type="info"></progressbar>
         </div>
     </div>
 </template>
@@ -27,7 +27,7 @@ export default {
             this.updateProgress();
         },
         updateProgress() {
-            if (this.progress > 240) {
+            if (this.progress > 60) {
                 clearTimeout(this.progressTimeout);
                 this.progress = 0;
             } else {

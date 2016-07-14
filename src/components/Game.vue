@@ -21,6 +21,11 @@
                             <input type="checkbox" v-model="autoBuff" /> Auto-Buff
                         </label>
                     </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" v-model="autoProtect" /> Auto-Protect
+                        </label>
+                    </div>
                 </form>
             </div>
         </div>
@@ -85,6 +90,8 @@ import GameUtil from '../util/game.util';
 
 const MOOGLE = 'Moogle';
 const WARTHOG = 'Warthog';
+const STAR = 'Star';
+const GOLD_RING = 'Gold Ring';
 
 export default {
     components: {
@@ -99,6 +106,7 @@ export default {
             target: '',
             cooldownEnabled: false,
             autoBuff: false,
+            autoProtect: false,
             // Item state
             itemCDProgress: 0,
             itemQueue: [],
@@ -171,7 +179,9 @@ export default {
         },
         useItem(item) {
             const target = this.target !== '' ? this.target : undefined;
-            this.itemQueue.push({ item, target });
+            const toQueue = { item, target };
+            this.itemQueue.push(toQueue);
+            console.log(`Adding ${JSON.stringify(toQueue)} to the queue`);
             this.toast.i(`Added item [${item.Name}] with target ` +
                 `[${target || 'meastes'}] to the queue`, 'Item Queued');
         },
@@ -196,7 +206,9 @@ export default {
                     .catch(err => {
                         const json = JSON.parse(err.data);
                         this.toast.e(json.error.error, 'Error');
-                        this.itemQueue.unshift({ item, target });
+                        const toQueue = { item, target };
+                        this.itemQueue.unshift(toQueue);
+                        console.log(`Adding ${JSON.stringify(toQueue)} back to the queue`);
                         clearTimeout(this.updateTimeTimeout);
                         this.updateItems().then(() => this.processItemQueue());
                     });
@@ -211,22 +223,49 @@ export default {
                     .then(info => {
                         if (info.ActiveEffects) {
                             if (info.ActiveEffects.indexOf(MOOGLE) === -1 &&
-                                this.itemQueue.filter(item => item.Name === MOOGLE).length === 0) {
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === MOOGLE
+                                ).length === 0) {
                                 this.useItem({ Name: MOOGLE });
                             }
                             if (info.ActiveEffects.indexOf(WARTHOG) === -1 &&
-                                this.itemQueue.filter(item => item.Name === WARTHOG).length === 0) {
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === WARTHOG
+                                ).length === 0) {
                                 this.useItem({ Name: WARTHOG });
                             }
                         }
                     })
                     .finally(() => {
                         clearTimeout(this.applyBuffsTimeout);
-                        this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 10000);
+                        this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
+                    });
+            } else if (this.autoProtect) {
+                this.playerService.getPlayerInfo()
+                    .then(info => {
+                        if (info.ActiveEffects) {
+                            if (info.ActiveEffects.indexOf(GOLD_RING) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === GOLD_RING
+                                ).length === 0) {
+                                this.useItem({ Name: GOLD_RING });
+                            }
+                            if (info.ActiveEffects.indexOf(STAR) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === STAR
+                                ).length === 0) {
+                                this.useItem({ Name: STAR });
+                            }
+                            // TODO add morger beard on the last day
+                        }
+                    })
+                    .finally(() => {
+                        clearTimeout(this.applyBuffsTimeout);
+                        this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
                     });
             } else {
                 clearTimeout(this.applyBuffsTimeout);
-                this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 10000);
+                this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
             }
         },
     },

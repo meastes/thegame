@@ -227,36 +227,24 @@ export default {
                     .then(info => {
                         if (info.ActiveEffects) {
                             if (info.ActiveEffects.indexOf(MOOGLE) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === MOOGLE) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === MOOGLE
                                 ).length === 0) {
                                 this.useItem({ Name: MOOGLE });
                             }
                             if (info.ActiveEffects.indexOf(WARTHOG) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === WARTHOG) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === WARTHOG
                                 ).length === 0) {
                                 this.useItem({ Name: WARTHOG });
                             }
                             if (info.ActiveEffects.indexOf(SEVENS) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === SEVENS) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === SEVENS
                                 ).length === 0) {
                                 this.useItem({ Name: SEVENS });
                             }
                             if (info.ActiveEffects.indexOf(RUSH_THE_DOG) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === RUSH_THE_DOG) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === RUSH_THE_DOG
                                 ).length === 0) {
@@ -274,36 +262,24 @@ export default {
                     .then(info => {
                         if (info.ActiveEffects) {
                             if (info.ActiveEffects.indexOf(GOLD_RING) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === GOLD_RING) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === GOLD_RING
                                 ).length === 0) {
                                 this.useItem({ Name: GOLD_RING });
                             }
                             // if (info.ActiveEffects.indexOf(STAR) === -1 &&
-                            //     this.items.filter(
-                            //         item => (item.Name === STAR) && (item.Quantity > 1)
-                            //     ).length > 1 &&
                             //     this.itemQueue.filter(
                             //         ({ item }) => item.Name === STAR
                             //     ).length === 0) {
                             //     this.useItem({ Name: STAR });
                             // }
                             if (info.ActiveEffects.indexOf(TANOOKI_SUIT) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === TANOOKI_SUIT) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === TANOOKI_SUIT
                                 ).length === 0) {
                                 this.useItem({ Name: TANOOKI_SUIT });
                             }
                             if (info.ActiveEffects.indexOf(MORGER_BEARD) === -1 &&
-                                this.items.filter(
-                                    item => (item.Name === MORGER_BEARD) && (item.Quantity > 1)
-                                ).length > 1 &&
                                 this.itemQueue.filter(
                                     ({ item }) => item.Name === MORGER_BEARD
                                 ).length === 0) {

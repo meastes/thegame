@@ -240,7 +240,8 @@ export default {
                         clearTimeout(this.applyBuffsTimeout);
                         this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
                     });
-            } else if (this.autoProtect) {
+            }
+            if (this.autoProtect) {
                 this.playerService.getPlayerInfo()
                     .then(info => {
                         if (info.ActiveEffects) {
@@ -263,7 +264,8 @@ export default {
                         clearTimeout(this.applyBuffsTimeout);
                         this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
                     });
-            } else {
+            }
+            if (!this.autoBuff && !this.autoProtect) {
                 clearTimeout(this.applyBuffsTimeout);
                 this.applyBuffsTimeout = setTimeout(() => this.applyBuffs(), 1000);
             }

@@ -90,6 +90,8 @@ import GameUtil from '../util/game.util';
 
 const MOOGLE = 'Moogle';
 const WARTHOG = 'Warthog';
+const SEVENS = '7777';
+const RUSH_THE_DOG = 'Rush the Dog';
 const STAR = 'Star';
 const GOLD_RING = 'Gold Ring';
 const MORGER_BEARD = 'Morger Beard';
@@ -208,7 +210,9 @@ export default {
                         const json = JSON.parse(err.data);
                         this.toast.e(json.error.error, 'Error');
                         const toQueue = { item, target };
-                        this.itemQueue.unshift(toQueue);
+                        if (item.Quantity > 1) {
+                            this.itemQueue.unshift(toQueue);
+                        }
                         clearTimeout(this.updateTimeTimeout);
                         this.updateItems().then(() => this.processItemQueue());
                     });
@@ -233,6 +237,18 @@ export default {
                                     ({ item }) => item.Name === WARTHOG
                                 ).length === 0) {
                                 this.useItem({ Name: WARTHOG });
+                            }
+                            if (info.ActiveEffects.indexOf(SEVENS) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === SEVENS
+                                ).length === 0) {
+                                this.useItem({ Name: SEVENS });
+                            }
+                            if (info.ActiveEffects.indexOf(RUSH_THE_DOG) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === RUSH_THE_DOG
+                                ).length === 0) {
+                                this.useItem({ Name: RUSH_THE_DOG });
                             }
                         }
                     })

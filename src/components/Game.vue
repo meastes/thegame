@@ -92,6 +92,7 @@ const MOOGLE = 'Moogle';
 const WARTHOG = 'Warthog';
 const STAR = 'Star';
 const GOLD_RING = 'Gold Ring';
+const MORGER_BEARD = 'Morger Beard';
 
 export default {
     components: {
@@ -125,6 +126,7 @@ export default {
         this.updateItems();
         this.processItemQueue();
         this.applyBuffs();
+        setInterval(() => this.useItem({ Name: MORGER_BEARD }), (15 * 60 * 1000) + 5000);
     },
     methods: {
         updateItems() {
@@ -181,7 +183,6 @@ export default {
             const target = this.target !== '' ? this.target : undefined;
             const toQueue = { item, target };
             this.itemQueue.push(toQueue);
-            console.log(`Adding ${JSON.stringify(toQueue)} to the queue`);
             this.toast.i(`Added item [${item.Name}] with target ` +
                 `[${target || 'meastes'}] to the queue`, 'Item Queued');
         },
@@ -208,7 +209,6 @@ export default {
                         this.toast.e(json.error.error, 'Error');
                         const toQueue = { item, target };
                         this.itemQueue.unshift(toQueue);
-                        console.log(`Adding ${JSON.stringify(toQueue)} back to the queue`);
                         clearTimeout(this.updateTimeTimeout);
                         this.updateItems().then(() => this.processItemQueue());
                     });

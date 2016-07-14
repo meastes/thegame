@@ -92,9 +92,10 @@ const MOOGLE = 'Moogle';
 const WARTHOG = 'Warthog';
 const SEVENS = '7777';
 const RUSH_THE_DOG = 'Rush the Dog';
-const STAR = 'Star';
+// const STAR = 'Star';
 const GOLD_RING = 'Gold Ring';
 const MORGER_BEARD = 'Morger Beard';
+const TANOOKI_SUIT = 'Tanooki Suit';
 
 export default {
     components: {
@@ -128,7 +129,6 @@ export default {
         this.updateItems();
         this.processItemQueue();
         this.applyBuffs();
-        setInterval(() => this.useItem({ Name: MORGER_BEARD }), (15 * 60 * 1000) + 5000);
     },
     methods: {
         updateItems() {
@@ -267,13 +267,24 @@ export default {
                                 ).length === 0) {
                                 this.useItem({ Name: GOLD_RING });
                             }
-                            if (info.ActiveEffects.indexOf(STAR) === -1 &&
+                            // if (info.ActiveEffects.indexOf(STAR) === -1 &&
+                            //     this.itemQueue.filter(
+                            //         ({ item }) => item.Name === STAR
+                            //     ).length === 0) {
+                            //     this.useItem({ Name: STAR });
+                            // }
+                            if (info.ActiveEffects.indexOf(TANOOKI_SUIT) === -1 &&
                                 this.itemQueue.filter(
-                                    ({ item }) => item.Name === STAR
+                                    ({ item }) => item.Name === TANOOKI_SUIT
                                 ).length === 0) {
-                                this.useItem({ Name: STAR });
+                                this.useItem({ Name: TANOOKI_SUIT });
                             }
-                            // TODO add morger beard on the last day
+                            if (info.ActiveEffects.indexOf(MORGER_BEARD) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === MORGER_BEARD
+                                ).length === 0) {
+                                this.useItem({ Name: MORGER_BEARD });
+                            }
                         }
                     })
                     .finally(() => {

@@ -93,7 +93,7 @@ const WARTHOG = 'Warthog';
 const SEVENS = '7777';
 const RUSH_THE_DOG = 'Rush the Dog';
 // const STAR = 'Star';
-// const GOLD_RING = 'Gold Ring';
+const GOLD_RING = 'Gold Ring';
 const MORGER_BEARD = 'Morger Beard';
 // const TANOOKI_SUIT = 'Tanooki Suit';
 
@@ -261,12 +261,12 @@ export default {
                 this.playerService.getPlayerInfo()
                     .then(info => {
                         if (info.ActiveEffects) {
-                            // if (info.ActiveEffects.indexOf(GOLD_RING) === -1 &&
-                            //     this.itemQueue.filter(
-                            //         ({ item }) => item.Name === GOLD_RING
-                            //     ).length === 0) {
-                            //     this.useItem({ Name: GOLD_RING });
-                            // }
+                            if (info.ActiveEffects.indexOf(GOLD_RING) === -1 &&
+                                this.itemQueue.filter(
+                                    ({ item }) => item.Name === GOLD_RING
+                                ).length === 0) {
+                                this.useItem({ Name: GOLD_RING });
+                            }
                             // if (info.ActiveEffects.indexOf(STAR) === -1 &&
                             //     this.itemQueue.filter(
                             //         ({ item }) => item.Name === STAR
